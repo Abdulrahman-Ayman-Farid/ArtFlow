@@ -11,7 +11,11 @@ import { ArtStoreService } from '../services/art-store.service';
   template: `
     <div class="group relative bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-transform hover:-translate-y-1 hover:shadow-2xl border border-slate-700 h-full flex flex-col">
       <!-- Image Container -->
-      <div class="relative w-full overflow-hidden bg-slate-900 aspect-video">
+      <div 
+        class="relative w-full overflow-hidden bg-slate-900 aspect-video cursor-zoom-in"
+        (click)="toggleZoom()"
+        title="Click to zoom"
+      >
         @if (isBase64(art().imageUrl)) {
              <img [src]="art().imageUrl" alt="{{art().title}}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
         } @else {
@@ -19,12 +23,12 @@ import { ArtStoreService } from '../services/art-store.service';
         }
         
         <!-- Overlay Gradient -->
-        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60"></div>
+        <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
         
         <!-- Top Actions -->
         <button 
-          (click)="onToggleFavorite.emit(art().id)"
-          class="absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-colors duration-200"
+          (click)="$event.stopPropagation(); onToggleFavorite.emit(art().id)"
+          class="absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-colors duration-200 z-10"
           [class.bg-yellow-500]="art().isFavorite"
           [class.text-white]="art().isFavorite"
           [class.bg-slate-900/50]="!art().isFavorite"
@@ -163,6 +167,41 @@ import { ArtStoreService } from '../services/art-store.service';
         }
       </div>
     </div>
+
+    <!-- Zoom Modal -->
+    @if (isZoomed()) {
+      <div 
+        class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-200"
+        (click)="toggleZoom()"
+      >
+        <!-- Close Button -->
+        <button 
+          (click)="toggleZoom()"
+          class="absolute top-6 right-6 p-2 text-white/50 hover:text-white transition-colors rounded-full hover:bg-white/10 z-[101]"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
+
+        <!-- Image Wrapper -->
+        <div 
+           class="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center pointer-events-none" 
+        >
+          <img 
+            [src]="art().imageUrl" 
+            alt="{{art().title}}" 
+            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto cursor-default"
+            (click)="$event.stopPropagation()"
+          >
+          
+          <!-- Caption -->
+          <div class="absolute bottom-4 left-0 right-0 text-center">
+            <span class="inline-block bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-medium border border-white/10">
+              {{ art().title }} by {{ art().artist }}
+            </span>
+          </div>
+        </div>
+      </div>
+    }
   `
 })
 export class ArtCardComponent {
@@ -175,6 +214,7 @@ export class ArtCardComponent {
 
   showComments = signal(false);
   newCommentText = signal('');
+  isZoomed = signal(false);
 
   isBase64(url: string): boolean {
     return url.startsWith('data:');
@@ -195,6 +235,10 @@ export class ArtCardComponent {
 
   toggleComments() {
     this.showComments.update(v => !v);
+  }
+
+  toggleZoom() {
+    this.isZoomed.update(v => !v);
   }
 
   postComment() {
