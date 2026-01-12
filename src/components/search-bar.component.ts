@@ -1,4 +1,4 @@
-import { Component, inject, signal } from '@angular/core';
+import { Component, inject, signal, effect } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ArtStoreService, SearchFilter } from '../services/art-store.service';
 import { FormControl, ReactiveFormsModule } from '@angular/forms';
@@ -82,11 +82,31 @@ export class SearchBarComponent {
   showFilterMenu = signal(false);
 
   constructor() {
+    // Sync input with store (handles external updates like Tag Clicks)
+    effect(() => {
+      const query = this.store.searchQuery();
+      if (this.searchControl.value !== query) {
+        this.searchControl.setValue(query, { emitEvent: false });
+      }
+    });
+
     this.searchControl.valueChanges.pipe(
       debounceTime(300),
       distinctUntilChanged()
     ).subscribe(value => {
-      this.store.setSearchQuery(value || '');
+      let query = value || '';
+      
+      // Auto-switch to tags filter if user types '#'
+      if (query.startsWith('#') && this.store.searchFilter() !== 'tags') {
+        this.store.setSearchFilter('tags');
+      }
+
+      // If in tags mode, remove '#' for search matching logic
+      if (this.store.searchFilter() === 'tags' && query.startsWith('#')) {
+        query = query.substring(1);
+      }
+
+      this.store.setSearchQuery(query);
     });
   }
 
@@ -101,6 +121,7 @@ export class SearchBarComponent {
 
   clearSearch() {
     this.searchControl.setValue('');
+    this.store.setSearchQuery('');
   }
 
   getFilterLabel(filter: SearchFilter): string {
@@ -119,7 +140,7 @@ export class SearchBarComponent {
       case 'all': return 'Search art, artists, or tags...';
       case 'title': return 'Search by artwork title...';
       case 'artist': return 'Search by artist name...';
-      case 'tags': return 'Search by tags...';
+      case 'tags': return 'Search tags (e.g. #cyberpunk)...';
       default: return 'Search...';
     }
   }

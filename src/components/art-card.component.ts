@@ -49,9 +49,12 @@ import { ArtStoreService } from '../services/art-store.service';
         <!-- Tags -->
         <div class="flex flex-wrap gap-2 mb-3">
           @for (tag of art().tags; track tag) {
-            <span class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600">
+            <button 
+              (click)="onTagClick($event, tag)"
+              class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-500 transition-colors cursor-pointer"
+            >
               #{{ tag }}
-            </span>
+            </button>
           }
         </div>
 
@@ -200,5 +203,12 @@ export class ArtCardComponent {
       this.store.addComment(this.art().id, text);
       this.newCommentText.set('');
     }
+  }
+
+  onTagClick(event: Event, tag: string) {
+    event.stopPropagation();
+    this.store.setSearchFilter('tags');
+    this.store.setSearchQuery(tag);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 }
