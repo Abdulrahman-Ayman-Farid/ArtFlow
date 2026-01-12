@@ -5,12 +5,22 @@ import { ArtCardComponent } from './components/art-card.component';
 import { UploadViewComponent } from './components/upload-view.component';
 import { SearchBarComponent } from './components/search-bar.component';
 import { ProfileViewComponent } from './components/profile-view.component';
+import { LoginViewComponent } from './components/login-view.component';
+import { SignupViewComponent } from './components/signup-view.component';
 
-type ViewState = 'home' | 'favorites' | 'upload';
+type ViewState = 'home' | 'favorites' | 'upload' | 'login' | 'signup';
 
 @Component({
   selector: 'app-root',
-  imports: [CommonModule, ArtCardComponent, UploadViewComponent, SearchBarComponent, ProfileViewComponent],
+  imports: [
+    CommonModule, 
+    ArtCardComponent, 
+    UploadViewComponent, 
+    SearchBarComponent, 
+    ProfileViewComponent,
+    LoginViewComponent,
+    SignupViewComponent
+  ],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
@@ -19,8 +29,14 @@ export class AppComponent {
   showProfile = signal(false);
 
   setView(view: ViewState) {
-    this.currentView.set(view);
-    this.showProfile.set(false); // Close modal when navigating
+    // Auth Guard for specific routes
+    if ((view === 'upload' || view === 'favorites') && !this.store.isLoggedIn()) {
+      this.currentView.set('login');
+    } else {
+      this.currentView.set(view);
+    }
+    
+    this.showProfile.set(false);
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
@@ -29,10 +45,24 @@ export class AppComponent {
   }
 
   onToggleLike(id: string) {
+    if (!this.store.isLoggedIn()) {
+      this.setView('login');
+      return;
+    }
     this.store.toggleLike(id);
   }
 
   onToggleFavorite(id: string) {
+    if (!this.store.isLoggedIn()) {
+      this.setView('login');
+      return;
+    }
     this.store.toggleFavorite(id);
+  }
+  
+  onLogout() {
+    this.store.logout();
+    this.showProfile.set(false);
+    this.setView('home');
   }
 }

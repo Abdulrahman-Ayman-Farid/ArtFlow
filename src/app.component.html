@@ -69,16 +69,40 @@
           </svg>
         </button>
 
-        <!-- Profile Button -->
-        <button 
-          (click)="toggleProfile()"
-          [class.ring-2]="showProfile()"
-          class="ring-indigo-500 ring-offset-2 ring-offset-slate-900 rounded-full transition-all"
-        >
-          <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-800 border border-slate-700">
-            <img [src]="store.userProfile().avatarUrl" alt="Profile" class="w-full h-full object-cover">
+        <!-- Auth Section -->
+        @if (store.isLoggedIn()) {
+          <!-- User Menu -->
+          <div class="relative">
+            <button 
+              (click)="toggleProfile()"
+              [class.ring-2]="showProfile()"
+              class="ring-indigo-500 ring-offset-2 ring-offset-slate-900 rounded-full transition-all flex items-center"
+            >
+              <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-800 border border-slate-700">
+                <img [src]="store.userProfile().avatarUrl" alt="Profile" class="w-full h-full object-cover">
+              </div>
+            </button>
+
+            <!-- Dropdown for Logout (Simple implementation via the Modal currently, but let's add a logout context menu or just rely on the modal) -->
+            <!-- We will use the existing profile modal for profile actions + logout -->
           </div>
-        </button>
+        } @else {
+          <!-- Login Buttons -->
+          <div class="flex gap-2">
+             <button 
+               (click)="setView('login')"
+               class="text-slate-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors hidden sm:block"
+             >
+               Log In
+             </button>
+             <button 
+               (click)="setView('signup')"
+               class="bg-slate-800 hover:bg-slate-700 text-white px-4 py-2 rounded-lg text-sm font-medium border border-slate-700 transition-all"
+             >
+               Sign Up
+             </button>
+          </div>
+        }
       </div>
     </div>
   </div>
@@ -165,6 +189,21 @@
       (onSuccess)="setView('home')"
     ></app-upload-view>
   }
+
+  <!-- Auth Views -->
+  @if (currentView() === 'login') {
+    <app-login-view 
+      (onSuccess)="setView('home')"
+      (onGoToSignup)="setView('signup')"
+    ></app-login-view>
+  }
+
+  @if (currentView() === 'signup') {
+    <app-signup-view 
+      (onSuccess)="setView('home')"
+      (onGoToLogin)="setView('login')"
+    ></app-signup-view>
+  }
 </main>
 
 <!-- Profile Modal Overlay -->
@@ -172,5 +211,15 @@
   <app-profile-view
     (onClose)="showProfile.set(false)"
     (onSave)="showProfile.set(false)"
-  ></app-profile-view>
+  >
+    <!-- Inject Logout Button into Profile View -->
+    <div class="border-t border-slate-700 pt-4 mt-4" ngProjectAs="footer-actions">
+      <button 
+        (click)="onLogout()"
+        class="w-full text-center text-red-400 hover:text-red-300 text-sm font-medium py-2 rounded hover:bg-red-500/10 transition-colors"
+      >
+        Sign Out
+      </button>
+    </div>
+  </app-profile-view>
 }

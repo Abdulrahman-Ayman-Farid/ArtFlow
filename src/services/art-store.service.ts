@@ -15,18 +15,21 @@ export interface Artwork {
   description: string;
   imageUrl: string;
   likes: number;
-  isLiked: boolean;
-  isFavorite: boolean;
+  isLiked: boolean; // In a real app, this would depend on the userId
+  isFavorite: boolean; // In a real app, this would depend on the userId
   critique?: string;
   isLoadingCritique?: boolean;
   tags: string[];
   comments: Comment[];
 }
 
-export interface UserProfile {
+export interface User {
+  id: string;
+  email: string;
   name: string;
   bio: string;
   avatarUrl: string;
+  password?: string; // In a real app, never store plain text
 }
 
 export type SearchFilter = 'all' | 'title' | 'artist' | 'tags';
@@ -35,6 +38,18 @@ export type SearchFilter = 'all' | 'title' | 'artist' | 'tags';
   providedIn: 'root'
 })
 export class ArtStoreService {
+  // Mock Database
+  private users: User[] = [
+    {
+      id: 'u1',
+      email: 'demo@artflow.com',
+      password: 'password',
+      name: 'Demo Artist',
+      bio: 'I love creating digital landscapes.',
+      avatarUrl: 'https://picsum.photos/seed/demo/200/200'
+    }
+  ];
+
   // Initial seed data
   private readonly initialArt: Artwork[] = [
     {
@@ -119,18 +134,29 @@ export class ArtStoreService {
   private artState = signal<Artwork[]>(this.initialArt);
   private searchQueryState = signal<string>('');
   private searchFilterState = signal<SearchFilter>('all');
-  private profileState = signal<UserProfile>({
-    name: 'Guest Artist',
-    bio: 'Art enthusiast and digital creator exploring the boundaries of imagination.',
-    avatarUrl: 'https://picsum.photos/id/64/200/200'
-  });
   
+  // Auth State
+  private currentUserState = signal<User | null>(null);
+
   // Computed signals
   readonly searchQuery = computed(() => this.searchQueryState());
   readonly searchFilter = computed(() => this.searchFilterState());
-  readonly userProfile = computed(() => this.profileState());
+  readonly currentUser = computed(() => this.currentUserState());
+  readonly isLoggedIn = computed(() => !!this.currentUserState());
   
-  // Expose the full list raw (useful for "Related Items" logic ignoring filters)
+  // Used for display in profile/comments
+  readonly userProfile = computed(() => {
+    const user = this.currentUserState();
+    if (user) {
+      return { name: user.name, bio: user.bio, avatarUrl: user.avatarUrl };
+    }
+    return {
+      name: 'Guest',
+      bio: 'Please login to share your art.',
+      avatarUrl: 'https://ui-avatars.com/api/?name=Guest&background=1e293b&color=94a3b8'
+    };
+  });
+  
   readonly allArtworks = computed(() => this.artState());
   
   readonly artworks = computed(() => {
@@ -157,7 +183,40 @@ export class ArtStoreService {
   readonly favorites = computed(() => this.artState().filter(a => a.isFavorite));
   readonly favoritesCount = computed(() => this.favorites().length);
 
-  // Actions
+  // --- Auth Actions ---
+
+  login(email: string, password: string): boolean {
+    const user = this.users.find(u => u.email === email && u.password === password);
+    if (user) {
+      this.currentUserState.set(user);
+      return true;
+    }
+    return false;
+  }
+
+  signup(name: string, email: string, password: string): boolean {
+    if (this.users.some(u => u.email === email)) {
+      return false; // User exists
+    }
+    const newUser: User = {
+      id: crypto.randomUUID(),
+      name,
+      email,
+      password,
+      bio: 'New Artist on the block.',
+      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`
+    };
+    this.users.push(newUser);
+    this.currentUserState.set(newUser);
+    return true;
+  }
+
+  logout() {
+    this.currentUserState.set(null);
+  }
+
+  // --- Art Actions ---
+
   setSearchQuery(query: string) {
     this.searchQueryState.set(query);
   }
@@ -166,8 +225,14 @@ export class ArtStoreService {
     this.searchFilterState.set(filter);
   }
 
-  updateProfile(profile: UserProfile) {
-    this.profileState.set(profile);
+  updateProfile(profile: { name: string; bio: string; avatarUrl: string }) {
+    const currentUser = this.currentUserState();
+    if (currentUser) {
+      const updatedUser = { ...currentUser, ...profile };
+      this.currentUserState.set(updatedUser);
+      // Update in mock db
+      this.users = this.users.map(u => u.id === updatedUser.id ? updatedUser : u);
+    }
   }
 
   toggleLike(id: string) {
@@ -205,7 +270,7 @@ export class ArtStoreService {
   }
 
   addComment(artId: string, text: string) {
-    const profile = this.profileState();
+    const profile = this.userProfile();
     const newComment: Comment = {
       id: crypto.randomUUID(),
       user: profile.name,

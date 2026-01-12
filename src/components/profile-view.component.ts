@@ -115,6 +115,9 @@ import { ArtStoreService } from '../services/art-store.service';
                 Save Profile
               </button>
             </div>
+            
+            <!-- Projected Content (Logout Button) -->
+            <ng-content select="[ngProjectAs='footer-actions']"></ng-content>
 
           </form>
         </div>
@@ -181,7 +184,7 @@ export class ProfileViewComponent implements OnInit {
       this.store.updateProfile({
         name: this.profileForm.value.name!,
         bio: this.profileForm.value.bio!,
-        avatarUrl: this.previewUrl() || currentProfile.avatarUrl
+        avatarUrl: this.previewUrl() || currentProfile.avatarUrl!
       });
       this.onSave.emit();
     }
