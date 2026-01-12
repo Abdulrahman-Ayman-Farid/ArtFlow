@@ -17,9 +17,20 @@ import { ArtStoreService } from '../services/art-store.service';
         title="Click to zoom"
       >
         @if (isBase64(art().imageUrl)) {
-             <img [src]="art().imageUrl" alt="{{art().title}}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+             <img 
+               [src]="art().imageUrl" 
+               alt="{{art().title}}" 
+               class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
+               [attr.loading]="priority() ? 'eager' : 'lazy'"
+             >
         } @else {
-             <img [src]="art().imageUrl" alt="{{art().title}}" class="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105">
+             <img 
+               [ngSrc]="art().imageUrl" 
+               fill
+               alt="{{art().title}}" 
+               class="object-cover transition-transform duration-700 group-hover:scale-105"
+               [priority]="priority()"
+             >
         }
         
         <!-- Overlay Gradient -->
@@ -133,8 +144,21 @@ import { ArtStoreService } from '../services/art-store.service';
                         (click)="scrollToArt(related.id)"
                         class="group/related relative aspect-video bg-slate-900 rounded-lg overflow-hidden cursor-pointer border border-slate-700 hover:border-indigo-500 transition-colors"
                      >
-                        <img [src]="related.imageUrl" class="w-full h-full object-cover opacity-70 group-hover/related:opacity-100 transition-opacity">
-                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent flex flex-col justify-end p-2">
+                        @if (isBase64(related.imageUrl)) {
+                           <img 
+                              [src]="related.imageUrl" 
+                              class="w-full h-full object-cover opacity-70 group-hover/related:opacity-100 transition-opacity"
+                              loading="lazy"
+                           >
+                        } @else {
+                           <img 
+                              [ngSrc]="related.imageUrl" 
+                              fill
+                              class="object-cover opacity-70 group-hover/related:opacity-100 transition-opacity"
+                           >
+                        }
+                        
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent flex flex-col justify-end p-2 pointer-events-none">
                            <p class="text-xs font-bold text-white truncate">{{ related.title }}</p>
                            <p class="text-[10px] text-slate-400 truncate">{{ related.artist }}</p>
                         </div>
@@ -155,6 +179,7 @@ import { ArtStoreService } from '../services/art-store.service';
                       [src]="comment.avatarUrl || 'https://picsum.photos/seed/' + comment.user + '/50/50'" 
                       class="w-8 h-8 rounded-full object-cover border border-slate-700"
                       alt="{{comment.user}}"
+                      loading="lazy"
                     >
                   </div>
                   <!-- Text -->
@@ -230,6 +255,8 @@ import { ArtStoreService } from '../services/art-store.service';
 })
 export class ArtCardComponent {
   art = input.required<Artwork>();
+  priority = input(false);
+  
   onToggleLike = output<string>();
   onToggleFavorite = output<string>();
   
@@ -307,10 +334,6 @@ export class ArtCardComponent {
     if (element) {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
-      // If the element is filtered out, we might want to clear the filter, 
-      // but for now, we'll just log or could optionally reset search.
-      // this.store.setSearchQuery(''); 
-      // setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100);
       console.warn('Artwork not visible in current view');
     }
   }

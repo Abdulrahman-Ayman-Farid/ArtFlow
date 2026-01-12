@@ -109,10 +109,11 @@
         </div>
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (item of store.artworks(); track item.id) {
+          @for (item of store.artworks(); track item.id; let idx = $index) {
             <app-art-card 
               [id]="item.id"
               [art]="item"
+              [priority]="idx < 6"
               (onToggleLike)="onToggleLike($event)"
               (onToggleFavorite)="onToggleFavorite($event)"
             ></app-art-card>
@@ -143,10 +144,11 @@
         </div>
       } @else {
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-          @for (item of store.favorites(); track item.id) {
+          @for (item of store.favorites(); track item.id; let idx = $index) {
             <app-art-card 
               [id]="item.id"
               [art]="item"
+              [priority]="idx < 6"
               (onToggleLike)="onToggleLike($event)"
               (onToggleFavorite)="onToggleFavorite($event)"
             ></app-art-card>
