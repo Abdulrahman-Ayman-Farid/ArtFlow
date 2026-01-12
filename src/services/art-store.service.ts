@@ -130,6 +130,9 @@ export class ArtStoreService {
   readonly searchFilter = computed(() => this.searchFilterState());
   readonly userProfile = computed(() => this.profileState());
   
+  // Expose the full list raw (useful for "Related Items" logic ignoring filters)
+  readonly allArtworks = computed(() => this.artState());
+  
   readonly artworks = computed(() => {
     const query = this.searchQueryState().toLowerCase().trim();
     const filter = this.searchFilterState();

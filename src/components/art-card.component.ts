@@ -1,4 +1,4 @@
-import { Component, input, output, inject, signal } from '@angular/core';
+import { Component, input, output, inject, signal, computed } from '@angular/core';
 import { CommonModule, NgOptimizedImage, DatePipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Artwork } from '../services/art-store.service';
@@ -98,6 +98,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <button 
               (click)="toggleComments()"
               class="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors"
+              title="Expand Details & Comments"
             >
               <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               <span class="text-sm">{{ art().comments.length }}</span>
@@ -118,10 +119,33 @@ import { ArtStoreService } from '../services/art-store.service';
           </div>
         </div>
 
-        <!-- Comments Section -->
+        <!-- Expanded Section (Related Art + Comments) -->
         @if (showComments()) {
           <div class="mt-auto border-t border-slate-700/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
             
+            <!-- Related Artworks -->
+            @if (relatedArtworks().length > 0) {
+              <div class="mb-4">
+                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">You might also like</h4>
+                <div class="grid grid-cols-2 gap-2">
+                   @for (related of relatedArtworks(); track related.id) {
+                     <div 
+                        (click)="scrollToArt(related.id)"
+                        class="group/related relative aspect-video bg-slate-900 rounded-lg overflow-hidden cursor-pointer border border-slate-700 hover:border-indigo-500 transition-colors"
+                     >
+                        <img [src]="related.imageUrl" class="w-full h-full object-cover opacity-70 group-hover/related:opacity-100 transition-opacity">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/90 to-transparent flex flex-col justify-end p-2">
+                           <p class="text-xs font-bold text-white truncate">{{ related.title }}</p>
+                           <p class="text-[10px] text-slate-400 truncate">{{ related.artist }}</p>
+                        </div>
+                     </div>
+                   }
+                </div>
+              </div>
+              <div class="h-px bg-slate-700/50 mb-3"></div>
+            }
+
+            <!-- Comments -->
             <div class="space-y-3 mb-3 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
               @for (comment of art().comments; track comment.id) {
                 <div class="bg-slate-900/50 p-2 rounded text-sm flex gap-3">
@@ -216,6 +240,27 @@ export class ArtCardComponent {
   newCommentText = signal('');
   isZoomed = signal(false);
 
+  // Computed signal to find related artworks based on tags
+  relatedArtworks = computed(() => {
+    const current = this.art();
+    // Use allArtworks so we can suggest items even if they are currently filtered out by the search bar
+    const all = this.store.allArtworks();
+    
+    if (!current.tags || current.tags.length === 0) return [];
+
+    return all
+      .filter(a => a.id !== current.id) // Exclude self
+      .map(a => ({
+        art: a,
+        // Count matching tags
+        matches: a.tags.filter(t => current.tags.includes(t)).length
+      }))
+      .filter(item => item.matches > 0) // Must share at least one tag
+      .sort((a, b) => b.matches - a.matches) // Sort by relevance
+      .slice(0, 2) // Limit to 2 suggestions
+      .map(item => item.art);
+  });
+
   isBase64(url: string): boolean {
     return url.startsWith('data:');
   }
@@ -254,5 +299,19 @@ export class ArtCardComponent {
     this.store.setSearchFilter('tags');
     this.store.setSearchQuery(tag);
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  scrollToArt(id: string) {
+    // Attempt to find the element in the DOM and scroll to it
+    const element = document.getElementById(id);
+    if (element) {
+      element.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    } else {
+      // If the element is filtered out, we might want to clear the filter, 
+      // but for now, we'll just log or could optionally reset search.
+      // this.store.setSearchQuery(''); 
+      // setTimeout(() => document.getElementById(id)?.scrollIntoView({ behavior: 'smooth' }), 100);
+      console.warn('Artwork not visible in current view');
+    }
   }
 }

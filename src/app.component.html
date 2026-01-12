@@ -111,6 +111,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (item of store.artworks(); track item.id) {
             <app-art-card 
+              [id]="item.id"
               [art]="item"
               (onToggleLike)="onToggleLike($event)"
               (onToggleFavorite)="onToggleFavorite($event)"
@@ -144,6 +145,7 @@
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
           @for (item of store.favorites(); track item.id) {
             <app-art-card 
+              [id]="item.id"
               [art]="item"
               (onToggleLike)="onToggleLike($event)"
               (onToggleFavorite)="onToggleFavorite($event)"
