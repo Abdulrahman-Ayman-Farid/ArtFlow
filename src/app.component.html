@@ -71,8 +71,8 @@
 
         <!-- Profile Button -->
         <button 
-          (click)="setView('profile')"
-          [class.ring-2]="currentView() === 'profile'"
+          (click)="toggleProfile()"
+          [class.ring-2]="showProfile()"
           class="ring-indigo-500 ring-offset-2 ring-offset-slate-900 rounded-full transition-all"
         >
           <div class="w-9 h-9 rounded-full overflow-hidden bg-slate-800 border border-slate-700">
@@ -161,12 +161,12 @@
       (onSuccess)="setView('home')"
     ></app-upload-view>
   }
-
-  <!-- Profile View -->
-  @if (currentView() === 'profile') {
-    <app-profile-view
-      (onClose)="setView('home')"
-      (onSave)="setView('home')"
-    ></app-profile-view>
-  }
 </main>
+
+<!-- Profile Modal Overlay -->
+@if (showProfile()) {
+  <app-profile-view
+    (onClose)="showProfile.set(false)"
+    (onSave)="showProfile.set(false)"
+  ></app-profile-view>
+}

@@ -6,7 +6,7 @@ import { UploadViewComponent } from './components/upload-view.component';
 import { SearchBarComponent } from './components/search-bar.component';
 import { ProfileViewComponent } from './components/profile-view.component';
 
-type ViewState = 'home' | 'favorites' | 'upload' | 'profile';
+type ViewState = 'home' | 'favorites' | 'upload';
 
 @Component({
   selector: 'app-root',
@@ -16,10 +16,16 @@ type ViewState = 'home' | 'favorites' | 'upload' | 'profile';
 export class AppComponent {
   store = inject(ArtStoreService);
   currentView = signal<ViewState>('home');
+  showProfile = signal(false);
 
   setView(view: ViewState) {
     this.currentView.set(view);
+    this.showProfile.set(false); // Close modal when navigating
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  toggleProfile() {
+    this.showProfile.update(v => !v);
   }
 
   onToggleLike(id: string) {
