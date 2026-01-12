@@ -28,6 +28,8 @@ export interface UserProfile {
   avatarUrl: string;
 }
 
+export type SearchFilter = 'all' | 'title' | 'artist' | 'tags';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -103,6 +105,7 @@ export class ArtStoreService {
   // State signals
   private artState = signal<Artwork[]>(this.initialArt);
   private searchQueryState = signal<string>('');
+  private searchFilterState = signal<SearchFilter>('all');
   private profileState = signal<UserProfile>({
     name: 'Guest Artist',
     bio: 'Art enthusiast and digital creator exploring the boundaries of imagination.',
@@ -111,19 +114,28 @@ export class ArtStoreService {
   
   // Computed signals
   readonly searchQuery = computed(() => this.searchQueryState());
+  readonly searchFilter = computed(() => this.searchFilterState());
   readonly userProfile = computed(() => this.profileState());
   
   readonly artworks = computed(() => {
     const query = this.searchQueryState().toLowerCase().trim();
+    const filter = this.searchFilterState();
     const allArt = this.artState();
 
     if (!query) return allArt;
 
-    return allArt.filter(art => 
-      art.title.toLowerCase().includes(query) ||
-      art.artist.toLowerCase().includes(query) ||
-      art.tags.some(tag => tag.toLowerCase().includes(query))
-    );
+    return allArt.filter(art => {
+      if (filter === 'title') return art.title.toLowerCase().includes(query);
+      if (filter === 'artist') return art.artist.toLowerCase().includes(query);
+      if (filter === 'tags') return art.tags.some(tag => tag.toLowerCase().includes(query));
+
+      // 'all' case
+      return (
+        art.title.toLowerCase().includes(query) ||
+        art.artist.toLowerCase().includes(query) ||
+        art.tags.some(tag => tag.toLowerCase().includes(query))
+      );
+    });
   });
 
   readonly favorites = computed(() => this.artState().filter(a => a.isFavorite));
@@ -132,6 +144,10 @@ export class ArtStoreService {
   // Actions
   setSearchQuery(query: string) {
     this.searchQueryState.set(query);
+  }
+
+  setSearchFilter(filter: SearchFilter) {
+    this.searchFilterState.set(filter);
   }
 
   updateProfile(profile: UserProfile) {
