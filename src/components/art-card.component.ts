@@ -117,12 +117,23 @@ import { ArtStoreService } from '../services/art-store.service';
             
             <div class="space-y-3 mb-3 max-h-40 overflow-y-auto pr-1 custom-scrollbar">
               @for (comment of art().comments; track comment.id) {
-                <div class="bg-slate-900/50 p-2 rounded text-sm">
-                  <div class="flex justify-between items-baseline mb-1">
-                    <span class="font-bold text-indigo-300 text-xs">{{ comment.user }}</span>
-                    <span class="text-[10px] text-slate-500">{{ comment.timestamp | date:'shortTime' }}</span>
+                <div class="bg-slate-900/50 p-2 rounded text-sm flex gap-3">
+                  <!-- Avatar -->
+                  <div class="flex-shrink-0">
+                    <img 
+                      [src]="comment.avatarUrl || 'https://picsum.photos/seed/' + comment.user + '/50/50'" 
+                      class="w-8 h-8 rounded-full object-cover border border-slate-700"
+                      alt="{{comment.user}}"
+                    >
                   </div>
-                  <p class="text-slate-300 text-xs">{{ comment.text }}</p>
+                  <!-- Text -->
+                  <div class="flex-1">
+                    <div class="flex justify-between items-baseline mb-1">
+                      <span class="font-bold text-indigo-300 text-xs">{{ comment.user }}</span>
+                      <span class="text-[10px] text-slate-500">{{ comment.timestamp | date:'shortTime' }}</span>
+                    </div>
+                    <p class="text-slate-300 text-xs">{{ comment.text }}</p>
+                  </div>
                 </div>
               } @empty {
                 <p class="text-xs text-slate-500 italic text-center py-2">No comments yet. Be the first!</p>

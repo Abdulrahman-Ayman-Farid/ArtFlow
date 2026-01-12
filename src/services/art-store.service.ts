@@ -3,6 +3,7 @@ import { Injectable, signal, computed } from '@angular/core';
 export interface Comment {
   id: string;
   user: string;
+  avatarUrl?: string;
   text: string;
   timestamp: Date;
 }
@@ -47,7 +48,13 @@ export class ArtStoreService {
       isFavorite: false,
       tags: ['cyberpunk', 'city', 'neon'],
       comments: [
-        { id: 'c1', user: 'PixelPioneer', text: 'The lighting here is incredible.', timestamp: new Date() }
+        { 
+          id: 'c1', 
+          user: 'PixelPioneer', 
+          avatarUrl: 'https://picsum.photos/seed/pixelpioneer/50/50',
+          text: 'The lighting here is incredible.', 
+          timestamp: new Date() 
+        }
       ]
     },
     {
@@ -73,7 +80,13 @@ export class ArtStoreService {
       isFavorite: true,
       tags: ['geometry', 'minimalism', 'shapes'],
       comments: [
-        { id: 'c2', user: 'MathArt', text: 'Perfect usage of the golden ratio.', timestamp: new Date() }
+        { 
+          id: 'c2', 
+          user: 'MathArt', 
+          avatarUrl: 'https://picsum.photos/seed/mathart/50/50',
+          text: 'Perfect usage of the golden ratio.', 
+          timestamp: new Date() 
+        }
       ]
     },
     {
@@ -189,9 +202,11 @@ export class ArtStoreService {
   }
 
   addComment(artId: string, text: string) {
+    const profile = this.profileState();
     const newComment: Comment = {
       id: crypto.randomUUID(),
-      user: this.profileState().name, // Use current profile name
+      user: profile.name,
+      avatarUrl: profile.avatarUrl,
       text: text,
       timestamp: new Date()
     };
