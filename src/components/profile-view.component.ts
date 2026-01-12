@@ -1,4 +1,4 @@
-import { Component, output, inject, OnInit } from '@angular/core';
+import { Component, output, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ArtStoreService } from '../services/art-store.service';
@@ -37,30 +37,36 @@ import { ArtStoreService } from '../services/art-store.service';
             
             <!-- Avatar Section -->
             <div class="flex flex-col items-center sm:flex-row gap-8">
-              <div class="relative group">
-                <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-500/30 shadow-lg bg-slate-900">
-                  <img [src]="previewUrl || store.userProfile().avatarUrl" class="w-full h-full object-cover">
+              <div class="flex flex-col items-center">
+                <div class="relative group">
+                  <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-indigo-500/30 shadow-lg bg-slate-900">
+                    <img [src]="previewUrl() || store.userProfile().avatarUrl" class="w-full h-full object-cover">
+                  </div>
+                  <button 
+                    type="button" 
+                    (click)="fileInput.click()"
+                    class="absolute bottom-0 right-0 p-2 bg-indigo-600 rounded-full text-white shadow-lg hover:bg-indigo-500 transition-colors"
+                    title="Change Avatar"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                  </button>
+                  <input 
+                    #fileInput 
+                    type="file" 
+                    class="hidden" 
+                    accept="image/png, image/jpeg, image/webp"
+                    (change)="onFileSelected($event)"
+                  >
                 </div>
-                <button 
-                  type="button" 
-                  (click)="fileInput.click()"
-                  class="absolute bottom-0 right-0 p-2 bg-indigo-600 rounded-full text-white shadow-lg hover:bg-indigo-500 transition-colors"
-                  title="Change Avatar"
-                >
-                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
-                </button>
-                <input 
-                  #fileInput 
-                  type="file" 
-                  class="hidden" 
-                  accept="image/*"
-                  (change)="onFileSelected($event)"
-                >
+                @if (fileError()) {
+                  <p class="text-red-400 text-xs mt-2 text-center font-medium animate-in fade-in slide-in-from-top-1">{{ fileError() }}</p>
+                }
               </div>
               
               <div class="flex-1 text-center sm:text-left">
                 <h3 class="text-xl font-bold text-white mb-1">{{ store.userProfile().name }}</h3>
                 <p class="text-slate-400 text-sm">Update your personal details and avatar here.</p>
+                <p class="text-slate-500 text-xs mt-1">Max size 5MB. Supported: JPG, PNG, WebP.</p>
               </div>
             </div>
 
@@ -103,7 +109,7 @@ import { ArtStoreService } from '../services/art-store.service';
               </button>
               <button 
                 type="submit" 
-                [disabled]="profileForm.invalid"
+                [disabled]="profileForm.invalid || !!fileError()"
                 class="flex-1 px-6 py-3 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-900/20"
               >
                 Save Profile
@@ -123,7 +129,8 @@ export class ProfileViewComponent implements OnInit {
   store = inject(ArtStoreService);
   private fb = inject(FormBuilder);
   
-  previewUrl: string | null = null;
+  previewUrl = signal<string | null>(null);
+  fileError = signal<string | null>(null);
   
   profileForm = this.fb.group({
     name: ['', [Validators.required, Validators.minLength(2)]],
@@ -142,23 +149,39 @@ export class ProfileViewComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     if (input.files && input.files.length > 0) {
       const file = input.files[0];
-      if (!file.type.startsWith('image/')) return;
       
+      // Reset previous error
+      this.fileError.set(null);
+
+      // Validate File Type
+      const validTypes = ['image/jpeg', 'image/png', 'image/webp'];
+      if (!validTypes.includes(file.type)) {
+        this.fileError.set('Invalid file type. Please upload JPG, PNG, or WebP.');
+        return;
+      }
+
+      // Validate File Size (Max 5MB)
+      const maxSize = 5 * 1024 * 1024; // 5MB in bytes
+      if (file.size > maxSize) {
+        this.fileError.set('File size exceeds 5MB limit.');
+        return;
+      }
+
       const reader = new FileReader();
       reader.onload = (e) => {
-        this.previewUrl = e.target?.result as string;
+        this.previewUrl.set(e.target?.result as string);
       };
       reader.readAsDataURL(file);
     }
   }
 
   onSubmit() {
-    if (this.profileForm.valid) {
+    if (this.profileForm.valid && !this.fileError()) {
       const currentProfile = this.store.userProfile();
       this.store.updateProfile({
         name: this.profileForm.value.name!,
         bio: this.profileForm.value.bio!,
-        avatarUrl: this.previewUrl || currentProfile.avatarUrl
+        avatarUrl: this.previewUrl() || currentProfile.avatarUrl
       });
       this.onSave.emit();
     }
