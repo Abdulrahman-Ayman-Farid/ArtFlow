@@ -1,0 +1,5 @@
+{
+  "name": "ArtFlow Gallery",
+  "description": "A modern art gallery where users can share their work, like posts, and curate a favorites list. Features AI-powered art critique.",
+  "requestFramePermissions": []
+}
