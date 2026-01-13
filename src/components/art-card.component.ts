@@ -12,7 +12,7 @@ import { ArtStoreService } from '../services/art-store.service';
     <div class="group relative bg-slate-800 rounded-xl overflow-hidden shadow-lg transition-transform hover:-translate-y-1 hover:shadow-2xl border border-slate-700 h-full flex flex-col">
       <!-- Image Container -->
       <div 
-        class="relative w-full overflow-hidden bg-slate-900 aspect-video cursor-zoom-in"
+        class="relative w-full overflow-hidden bg-slate-900 aspect-video cursor-zoom-in group/image"
         (click)="toggleZoom()"
         title="Click to zoom"
       >
@@ -64,6 +64,26 @@ import { ArtStoreService } from '../services/art-store.service';
             </svg>
           </button>
         </div>
+
+        <!-- Related Art Preview (On Hover) -->
+        @if (relatedArtworks().length > 0) {
+           <div class="absolute bottom-0 left-0 right-0 p-4 bg-gradient-to-t from-black/95 via-black/80 to-transparent translate-y-full group-hover/image:translate-y-0 transition-transform duration-300 ease-out z-10 flex items-center justify-between pointer-events-none">
+              <div class="flex items-center gap-3">
+                 <span class="text-[10px] font-bold text-orange-400 uppercase tracking-widest opacity-0 group-hover/image:opacity-100 transition-opacity duration-300 delay-100">See Also</span>
+                 <div class="flex gap-2">
+                    @for (related of relatedArtworks(); track related.id) {
+                       <div 
+                          (click)="$event.stopPropagation(); scrollToArt(related.id)"
+                          class="w-16 h-10 rounded-md border border-white/20 overflow-hidden shadow-lg bg-slate-800 cursor-pointer hover:border-orange-500 hover:scale-105 transition-all pointer-events-auto relative group/thumb"
+                          title="{{related.title}}"
+                       >
+                          <img [src]="related.imageUrl" class="w-full h-full object-cover">
+                       </div>
+                    }
+                 </div>
+              </div>
+           </div>
+        }
       </div>
 
       <!-- Content -->
@@ -148,7 +168,7 @@ import { ArtStoreService } from '../services/art-store.service';
         @if (showComments()) {
           <div class="mt-auto border-t border-slate-700/50 pt-3 animate-in fade-in slide-in-from-top-2 duration-300">
             
-            <!-- Related Artworks -->
+            <!-- Related Artworks (Expanded View) -->
             @if (relatedArtworks().length > 0) {
               <div class="mb-4">
                 <h4 class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2">You might also like</h4>
