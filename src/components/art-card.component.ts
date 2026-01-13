@@ -284,8 +284,10 @@ import { ArtStoreService } from '../services/art-store.service';
     <!-- Zoom Modal -->
     @if (isZoomed()) {
       <div 
-        class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-200"
+        class="fixed inset-0 z-[100] bg-black/95 backdrop-blur-sm flex items-center justify-center p-4 cursor-zoom-out animate-in fade-in duration-300"
         (click)="toggleZoom()"
+        (mousemove)="onZoomMouseMove($event)"
+        (mouseleave)="onZoomMouseLeave()"
       >
         <!-- Close Button -->
         <button 
@@ -297,18 +299,21 @@ import { ArtStoreService } from '../services/art-store.service';
 
         <!-- Image Wrapper -->
         <div 
-           class="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center pointer-events-none" 
+           class="relative max-w-7xl max-h-[90vh] w-full h-full flex items-center justify-center pointer-events-none perspective-container" 
         >
           <img 
             [src]="art().imageUrl" 
             alt="{{art().title}}" 
-            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto cursor-default"
+            class="max-w-full max-h-full object-contain rounded-lg shadow-2xl pointer-events-auto cursor-default transition-transform duration-75 ease-out will-change-transform"
+            [style.transform]="zoomTransform()"
             (click)="$event.stopPropagation()"
           >
           
           <!-- Caption -->
-          <div class="absolute bottom-4 left-0 right-0 text-center">
-            <span class="inline-block bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-medium border border-white/10">
+          <div class="absolute bottom-4 left-0 right-0 text-center pointer-events-none transform-gpu"
+              [style.transform]="zoomTransform() ? 'translateY(10px)' : 'none'"
+          >
+            <span class="inline-block bg-black/60 backdrop-blur-md px-4 py-2 rounded-full text-white text-sm font-medium border border-white/10 shadow-lg">
               {{ art().title }} by {{ art().artist }}
             </span>
           </div>
@@ -332,6 +337,7 @@ export class ArtCardComponent {
   isZoomed = signal(false);
   critiqueError = signal<string | null>(null);
   isCopied = signal(false);
+  zoomTransform = signal('');
 
   // Computed signal to find related artworks based on tags
   relatedArtworks = computed(() => {
@@ -384,6 +390,45 @@ export class ArtCardComponent {
 
   toggleZoom() {
     this.isZoomed.update(v => !v);
+    this.zoomTransform.set(''); // Reset transform on close
+  }
+  
+  onZoomMouseMove(event: MouseEvent) {
+    if (!this.isZoomed()) return;
+    
+    // We want the effect to be relative to the window center for full screen impact
+    const { clientX, clientY } = event;
+    const { innerWidth, innerHeight } = window;
+    
+    // Calculate percentages (-1 to 1)
+    const xPct = (clientX / innerWidth - 0.5) * 2;
+    const yPct = (clientY / innerHeight - 0.5) * 2;
+    
+    // Constants for effect intensity
+    const maxRotateY = 8; // Degrees
+    const maxRotateX = 8; // Degrees
+    const maxTranslate = 15; // Pixels
+    
+    // Calculate values
+    const rotateY = xPct * maxRotateY;
+    const rotateX = -yPct * maxRotateX; // Invert for natural tilt
+    const translateX = -xPct * maxTranslate; // Move opposite to mouse for depth
+    const translateY = -yPct * maxTranslate;
+
+    // Apply 3D transform
+    // perspective must be on parent or in the transform string
+    this.zoomTransform.set(`
+      perspective(1000px) 
+      rotateX(${rotateX}deg) 
+      rotateY(${rotateY}deg) 
+      translateX(${translateX}px) 
+      translateY(${translateY}px)
+      scale(1.02)
+    `);
+  }
+
+  onZoomMouseLeave() {
+    this.zoomTransform.set('');
   }
 
   postComment() {
