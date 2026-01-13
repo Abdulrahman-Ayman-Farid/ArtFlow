@@ -37,19 +37,33 @@ import { ArtStoreService } from '../services/art-store.service';
         <div class="absolute inset-0 bg-gradient-to-t from-slate-900/80 via-transparent to-transparent opacity-60 pointer-events-none"></div>
         
         <!-- Top Actions -->
-        <button 
-          (click)="$event.stopPropagation(); onToggleFavorite.emit(art().id)"
-          class="absolute top-3 right-3 p-2 rounded-full backdrop-blur-md transition-colors duration-200 z-10"
-          [class.bg-yellow-500]="art().isFavorite"
-          [class.text-white]="art().isFavorite"
-          [class.bg-slate-900/50]="!art().isFavorite"
-          [class.text-slate-300]="!art().isFavorite"
-          [class.hover:bg-slate-800]="!art().isFavorite"
-        >
-          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.fill-current]="art().isFavorite">
-            <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
-          </svg>
-        </button>
+        <div class="absolute top-3 right-3 flex gap-2 z-10">
+          <!-- Expand/Fullscreen Button -->
+          <button 
+            (click)="$event.stopPropagation(); toggleZoom()"
+            class="p-2 rounded-full backdrop-blur-md bg-slate-900/50 text-slate-300 hover:bg-slate-800 hover:text-white transition-colors duration-200"
+            title="Expand to Fullscreen"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M15 3h6v6M9 21H3v-6M21 3l-7 7M3 21l7-7"/>
+            </svg>
+          </button>
+
+          <!-- Favorite Button -->
+          <button 
+            (click)="$event.stopPropagation(); onToggleFavorite.emit(art().id)"
+            class="p-2 rounded-full backdrop-blur-md transition-colors duration-200"
+            [class.bg-yellow-500]="art().isFavorite"
+            [class.text-white]="art().isFavorite"
+            [class.bg-slate-900/50]="!art().isFavorite"
+            [class.text-slate-300]="!art().isFavorite"
+            [class.hover:bg-slate-800]="!art().isFavorite"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" [class.fill-current]="art().isFavorite">
+              <polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon>
+            </svg>
+          </button>
+        </div>
       </div>
 
       <!-- Content -->
