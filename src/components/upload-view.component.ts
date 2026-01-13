@@ -132,7 +132,7 @@ export class UploadViewComponent {
   onCancel = output<void>();
   onSuccess = output<void>();
   
-  private fb = inject(FormBuilder);
+  private fb: FormBuilder = inject(FormBuilder);
   private store = inject(ArtStoreService);
   
   previewUrl: string | null = null;

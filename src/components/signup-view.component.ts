@@ -81,7 +81,7 @@ export class SignupViewComponent {
   onSuccess = output<void>();
   onGoToLogin = output<void>();
 
-  private fb = inject(FormBuilder);
+  private fb: FormBuilder = inject(FormBuilder);
   private store = inject(ArtStoreService);
 
   errorMessage = signal<string>('');

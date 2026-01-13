@@ -29,6 +29,7 @@ export interface User {
   name: string;
   bio: string;
   avatarUrl: string;
+  joinedDate: Date;
   password?: string; // In a real app, never store plain text
 }
 
@@ -46,7 +47,8 @@ export class ArtStoreService {
       password: 'password',
       name: 'Demo Artist',
       bio: 'I love creating digital landscapes.',
-      avatarUrl: 'https://picsum.photos/seed/demo/200/200'
+      avatarUrl: 'https://picsum.photos/seed/demo/200/200',
+      joinedDate: new Date('2023-11-15')
     }
   ];
 
@@ -204,7 +206,8 @@ export class ArtStoreService {
       email,
       password,
       bio: 'New Artist on the block.',
-      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`
+      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`,
+      joinedDate: new Date()
     };
     this.users.push(newUser);
     this.currentUserState.set(newUser);
@@ -228,10 +231,23 @@ export class ArtStoreService {
   updateProfile(profile: { name: string; bio: string; avatarUrl: string }) {
     const currentUser = this.currentUserState();
     if (currentUser) {
+      const oldName = currentUser.name;
       const updatedUser = { ...currentUser, ...profile };
       this.currentUserState.set(updatedUser);
+      
       // Update in mock db
       this.users = this.users.map(u => u.id === updatedUser.id ? updatedUser : u);
+
+      // If name changed, update ownership of existing artworks in mock db
+      // In a real app with IDs, this wouldn't be necessary.
+      if (oldName !== profile.name) {
+        this.artState.update(arts => arts.map(art => {
+          if (art.artist === oldName) {
+            return { ...art, artist: profile.name };
+          }
+          return art;
+        }));
+      }
     }
   }
 
