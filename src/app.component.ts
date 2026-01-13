@@ -7,8 +7,9 @@ import { SearchBarComponent } from './components/search-bar.component';
 import { ProfileViewComponent } from './components/profile-view.component';
 import { LoginViewComponent } from './components/login-view.component';
 import { SignupViewComponent } from './components/signup-view.component';
+import { WelcomeViewComponent } from './components/welcome-view.component';
 
-type ViewState = 'home' | 'favorites' | 'upload' | 'login' | 'signup';
+type ViewState = 'welcome' | 'home' | 'favorites' | 'upload' | 'login' | 'signup';
 
 @Component({
   selector: 'app-root',
@@ -19,13 +20,14 @@ type ViewState = 'home' | 'favorites' | 'upload' | 'login' | 'signup';
     SearchBarComponent, 
     ProfileViewComponent,
     LoginViewComponent,
-    SignupViewComponent
+    SignupViewComponent,
+    WelcomeViewComponent
   ],
   templateUrl: './app.component.html'
 })
 export class AppComponent {
   store = inject(ArtStoreService);
-  currentView = signal<ViewState>('home');
+  currentView = signal<ViewState>('welcome');
   showProfile = signal(false);
 
   setView(view: ViewState) {
@@ -63,6 +65,6 @@ export class AppComponent {
   onLogout() {
     this.store.logout();
     this.showProfile.set(false);
-    this.setView('home');
+    this.setView('welcome');
   }
 }
