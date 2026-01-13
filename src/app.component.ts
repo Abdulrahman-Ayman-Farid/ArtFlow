@@ -8,8 +8,9 @@ import { ProfileViewComponent } from './components/profile-view.component';
 import { LoginViewComponent } from './components/login-view.component';
 import { SignupViewComponent } from './components/signup-view.component';
 import { WelcomeViewComponent } from './components/welcome-view.component';
+import { AboutViewComponent } from './components/about-view.component';
 
-type ViewState = 'welcome' | 'home' | 'favorites' | 'upload' | 'login' | 'signup';
+type ViewState = 'welcome' | 'home' | 'favorites' | 'upload' | 'login' | 'signup' | 'about';
 
 @Component({
   selector: 'app-root',
@@ -21,7 +22,8 @@ type ViewState = 'welcome' | 'home' | 'favorites' | 'upload' | 'login' | 'signup
     ProfileViewComponent,
     LoginViewComponent,
     SignupViewComponent,
-    WelcomeViewComponent
+    WelcomeViewComponent,
+    AboutViewComponent
   ],
   templateUrl: './app.component.html'
 })

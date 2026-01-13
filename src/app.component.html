@@ -36,6 +36,15 @@
               <span class="bg-yellow-500 text-slate-900 font-bold text-xs px-2 py-0.5 rounded-full">{{ store.favoritesCount() }}</span>
             }
           </button>
+          
+          <button 
+            (click)="setView('about')"
+            [class.bg-red-500/20]="currentView() === 'about'"
+            [class.text-red-400]="currentView() === 'about'"
+            class="text-slate-300 hover:bg-white/5 hover:text-white px-3 py-2 rounded-md text-sm font-medium transition-colors"
+          >
+            About
+          </button>
         </div>
       </div>
 
@@ -187,6 +196,13 @@
         </div>
       }
     </div>
+  }
+
+  <!-- About View -->
+  @if (currentView() === 'about') {
+    <app-about-view 
+      (onBack)="setView('home')"
+    ></app-about-view>
   }
 
   <!-- Upload View -->
