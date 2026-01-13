@@ -140,6 +140,20 @@ import { ArtStoreService } from '../services/art-store.service';
           </button>
 
           <div class="flex gap-4 items-center">
+            <!-- Share Button -->
+            <button 
+              (click)="shareArt()" 
+              class="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors"
+              [title]="isCopied() ? 'Copied!' : 'Share URL'"
+            >
+              @if (isCopied()) {
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="text-green-500"><polyline points="20 6 9 17 4 12"></polyline></svg>
+              } @else {
+                 <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"></circle><circle cx="6" cy="12" r="3"></circle><circle cx="18" cy="19" r="3"></circle><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"></line><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"></line></svg>
+              }
+            </button>
+
+            <!-- Comments Button -->
             <button 
               (click)="toggleComments()"
               class="flex items-center space-x-1 text-slate-400 hover:text-white transition-colors"
@@ -317,6 +331,7 @@ export class ArtCardComponent {
   newCommentText = signal('');
   isZoomed = signal(false);
   critiqueError = signal<string | null>(null);
+  isCopied = signal(false);
 
   // Computed signal to find related artworks based on tags
   relatedArtworks = computed(() => {
@@ -393,6 +408,18 @@ export class ArtCardComponent {
       element.scrollIntoView({ behavior: 'smooth', block: 'center' });
     } else {
       console.warn('Artwork not visible in current view');
+    }
+  }
+
+  async shareArt() {
+    const url = `${window.location.origin}/#art-${this.art().id}`;
+    
+    try {
+      await navigator.clipboard.writeText(url);
+      this.isCopied.set(true);
+      setTimeout(() => this.isCopied.set(false), 2000);
+    } catch (err) {
+      console.error('Failed to copy:', err);
     }
   }
 }
