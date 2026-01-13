@@ -11,7 +11,7 @@ import { ArtStoreService } from '../services/art-store.service';
       <div class="w-full max-w-md">
         <!-- Brand/Logo Area -->
         <div class="text-center mb-8">
-          <div class="mx-auto w-16 h-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-2xl flex items-center justify-center shadow-lg shadow-indigo-500/30 mb-4 transform -rotate-6">
+          <div class="mx-auto w-16 h-16 bg-gradient-to-br from-red-500 to-orange-600 rounded-2xl flex items-center justify-center shadow-lg shadow-red-500/30 mb-4 transform -rotate-6">
             <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01" />
             </svg>
@@ -45,7 +45,7 @@ import { ArtStoreService } from '../services/art-store.service';
                 <input 
                   type="email" 
                   formControlName="email"
-                  class="block w-full pl-10 bg-slate-900/50 border border-slate-600 rounded-lg py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  class="block w-full pl-10 bg-slate-900/50 border border-slate-600 rounded-lg py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                   placeholder="you@example.com"
                 >
               </div>
@@ -62,7 +62,7 @@ import { ArtStoreService } from '../services/art-store.service';
                 <input 
                   type="password" 
                   formControlName="password"
-                  class="block w-full pl-10 bg-slate-900/50 border border-slate-600 rounded-lg py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                  class="block w-full pl-10 bg-slate-900/50 border border-slate-600 rounded-lg py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                   placeholder="••••••••"
                 >
               </div>
@@ -71,7 +71,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <button 
               type="submit" 
               [disabled]="loginForm.invalid"
-              class="w-full bg-gradient-to-r from-indigo-600 to-indigo-500 hover:from-indigo-500 hover:to-indigo-400 text-white font-semibold py-3 rounded-lg shadow-lg shadow-indigo-900/20 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full bg-gradient-to-r from-red-600 to-orange-600 hover:from-red-500 hover:to-orange-500 text-white font-semibold py-3 rounded-lg shadow-lg shadow-red-900/20 transition-all transform active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Sign In
             </button>
@@ -80,7 +80,7 @@ import { ArtStoreService } from '../services/art-store.service';
           <div class="mt-6 text-center">
             <p class="text-slate-400 text-sm">
               Don't have an account? 
-              <button (click)="onGoToSignup.emit()" class="text-indigo-400 hover:text-indigo-300 font-medium hover:underline">
+              <button (click)="onGoToSignup.emit()" class="text-orange-400 hover:text-orange-300 font-medium hover:underline">
                 Create one
               </button>
             </p>

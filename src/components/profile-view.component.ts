@@ -42,7 +42,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <div class="flex flex-col items-center sm:flex-row gap-8 pb-6 border-b border-slate-700/50">
               <div class="flex flex-col items-center">
                 <div class="relative group cursor-pointer" (click)="fileInput.click()">
-                  <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-700 shadow-xl bg-slate-900 group-hover:border-indigo-500 transition-colors">
+                  <div class="w-32 h-32 rounded-full overflow-hidden border-4 border-slate-700 shadow-xl bg-slate-900 group-hover:border-red-500 transition-colors">
                     <img [src]="previewUrl() || store.userProfile().avatarUrl" class="w-full h-full object-cover">
                   </div>
                   <!-- Camera Icon Overlay -->
@@ -66,7 +66,7 @@ import { ArtStoreService } from '../services/art-store.service';
               <div class="flex-1 text-center sm:text-left space-y-2">
                 <div>
                    <h3 class="text-xl font-bold text-white">{{ store.currentUser()?.name }}</h3>
-                   <p class="text-indigo-400 text-sm font-medium">{{ store.currentUser()?.email }}</p>
+                   <p class="text-orange-400 text-sm font-medium">{{ store.currentUser()?.email }}</p>
                 </div>
                 
                 @if (store.currentUser()?.joinedDate) {
@@ -89,7 +89,7 @@ import { ArtStoreService } from '../services/art-store.service';
                 <input 
                   type="text" 
                   formControlName="name"
-                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all"
                 >
                 @if (profileForm.get('name')?.touched && profileForm.get('name')?.invalid) {
                   <p class="text-red-400 text-sm mt-1">Name is required (min 2 chars).</p>
@@ -102,7 +102,7 @@ import { ArtStoreService } from '../services/art-store.service';
                 <textarea 
                   formControlName="bio"
                   rows="4"
-                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all resize-none"
+                  class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all resize-none"
                   placeholder="Tell the community about your art..."
                 ></textarea>
                 @if (profileForm.get('bio')?.touched && profileForm.get('bio')?.invalid) {
@@ -126,7 +126,7 @@ import { ArtStoreService } from '../services/art-store.service';
               <button 
                 type="submit" 
                 [disabled]="profileForm.invalid || !!fileError()"
-                class="flex-1 px-6 py-3 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-900/20"
+                class="flex-1 px-6 py-3 rounded-lg bg-red-600 text-white font-bold hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-900/20"
               >
                 Save Changes
               </button>

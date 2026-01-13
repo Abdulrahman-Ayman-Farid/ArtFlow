@@ -129,6 +129,66 @@ export class ArtStoreService {
       isFavorite: false,
       tags: ['urban', 'texture', 'architecture'],
       comments: []
+    },
+    {
+      id: '6',
+      title: 'Crimson Horizon',
+      artist: 'Leo Mars',
+      description: 'A striking sunset over a martian landscape.',
+      imageUrl: 'https://picsum.photos/id/1015/600/400',
+      likes: 543,
+      isLiked: false,
+      isFavorite: false,
+      tags: ['landscape', 'red', 'sunset'],
+      comments: []
+    },
+    {
+      id: '7',
+      title: 'Golden Hour',
+      artist: 'Amber Ray',
+      description: 'Warm light filtering through autumn leaves.',
+      imageUrl: 'https://picsum.photos/id/1043/600/600',
+      likes: 231,
+      isLiked: false,
+      isFavorite: false,
+      tags: ['nature', 'yellow', 'light'],
+      comments: []
+    },
+    {
+      id: '8',
+      title: 'Industrial Heat',
+      artist: 'Forge Smith',
+      description: 'Molten metal and sparks in a factory.',
+      imageUrl: 'https://picsum.photos/id/400/800/600',
+      likes: 112,
+      isLiked: false,
+      isFavorite: false,
+      tags: ['industry', 'fire', 'orange'],
+      comments: []
+    },
+    {
+      id: '9',
+      title: 'Abstract Fury',
+      artist: 'Red Pollock',
+      description: 'Chaotic splashes of red and orange paint.',
+      imageUrl: 'https://picsum.photos/id/435/600/800',
+      likes: 87,
+      isLiked: false,
+      isFavorite: false,
+      tags: ['abstract', 'chaos', 'red'],
+      comments: []
+    },
+    {
+      id: '10',
+      title: 'Street Ember',
+      artist: 'Night Crawler',
+      description: 'City lights blurring into trails of fire.',
+      imageUrl: 'https://picsum.photos/id/356/600/400',
+      likes: 420,
+      isLiked: true,
+      isFavorite: true,
+      tags: ['city', 'night', 'lights'],
+      comments: []
     }
   ];
 
@@ -206,7 +266,7 @@ export class ArtStoreService {
       email,
       password,
       bio: 'New Artist on the block.',
-      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=4f46e5&color=fff`,
+      avatarUrl: `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=ef4444&color=fff`,
       joinedDate: new Date()
     };
     this.users.push(newUser);

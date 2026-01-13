@@ -54,7 +54,7 @@ import { ArtStoreService } from '../services/art-store.service';
             (click)="$event.stopPropagation(); onToggleFavorite.emit(art().id)"
             class="p-2 rounded-full backdrop-blur-md transition-colors duration-200"
             [class.bg-yellow-500]="art().isFavorite"
-            [class.text-white]="art().isFavorite"
+            [class.text-slate-900]="art().isFavorite"
             [class.bg-slate-900/50]="!art().isFavorite"
             [class.text-slate-300]="!art().isFavorite"
             [class.hover:bg-slate-800]="!art().isFavorite"
@@ -71,7 +71,7 @@ import { ArtStoreService } from '../services/art-store.service';
         <div class="flex justify-between items-start mb-2">
           <div>
             <h3 class="text-xl font-bold text-white truncate pr-2">{{ art().title }}</h3>
-            <p class="text-sm text-indigo-400 font-medium">{{ art().artist }}</p>
+            <p class="text-sm text-orange-400 font-medium">{{ art().artist }}</p>
           </div>
         </div>
 
@@ -80,7 +80,7 @@ import { ArtStoreService } from '../services/art-store.service';
           @for (tag of art().tags; track tag) {
             <button 
               (click)="onTagClick($event, tag)"
-              class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600 hover:bg-indigo-600 hover:text-white hover:border-indigo-500 transition-colors cursor-pointer"
+              class="text-[10px] uppercase font-bold tracking-wider px-2 py-0.5 rounded-full bg-slate-700 text-slate-300 border border-slate-600 hover:bg-red-600 hover:text-white hover:border-red-500 transition-colors cursor-pointer"
             >
               #{{ tag }}
             </button>
@@ -91,12 +91,12 @@ import { ArtStoreService } from '../services/art-store.service';
 
         <!-- AI Critique Section -->
         @if (art().critique) {
-          <div class="mb-4 p-3 bg-indigo-900/20 border border-indigo-500/30 rounded-lg">
-            <div class="flex items-center gap-2 mb-1 text-xs font-semibold text-indigo-300 uppercase tracking-wide">
+          <div class="mb-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
+            <div class="flex items-center gap-2 mb-1 text-xs font-semibold text-red-300 uppercase tracking-wide">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10h-10V2z"></path><path d="M12 12 2 12a10 10 0 0 1 10-10v10z"></path></svg>
               AI Critic
             </div>
-            <p class="text-xs text-indigo-100 italic">"{{ art().critique }}"</p>
+            <p class="text-xs text-red-100 italic">"{{ art().critique }}"</p>
           </div>
         }
 
@@ -107,8 +107,8 @@ import { ArtStoreService } from '../services/art-store.service';
             class="flex items-center space-x-2 group/like focus:outline-none"
           >
             <div class="p-2 rounded-full transition-colors"
-               [class.bg-pink-500/20]="art().isLiked"
-               [class.text-pink-500]="art().isLiked"
+               [class.bg-red-500/20]="art().isLiked"
+               [class.text-red-500]="art().isLiked"
                [class.text-slate-400]="!art().isLiked"
                [class.group-hover/like:bg-slate-700]="!art().isLiked"
             >
@@ -116,7 +116,7 @@ import { ArtStoreService } from '../services/art-store.service';
                 <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
               </svg>
             </div>
-            <span class="text-sm font-medium" [class.text-pink-500]="art().isLiked" [class.text-slate-400]="!art().isLiked">{{ art().likes }}</span>
+            <span class="text-sm font-medium" [class.text-red-500]="art().isLiked" [class.text-slate-400]="!art().isLiked">{{ art().likes }}</span>
           </button>
 
           <div class="flex gap-4 items-center">
@@ -132,14 +132,14 @@ import { ArtStoreService } from '../services/art-store.service';
             @if (!art().critique && !art().isLoadingCritique) {
               <button 
                 (click)="askCritic()"
-                class="text-xs font-medium text-slate-400 hover:text-white hover:underline decoration-indigo-500 underline-offset-4 transition-colors"
+                class="text-xs font-medium text-slate-400 hover:text-white hover:underline decoration-red-500 underline-offset-4 transition-colors"
               >
                 Ask AI Critic
               </button>
             }
 
             @if (art().isLoadingCritique) {
-               <span class="text-xs text-indigo-400 animate-pulse">Analyzing...</span>
+               <span class="text-xs text-orange-400 animate-pulse">Analyzing...</span>
             }
           </div>
         </div>
@@ -151,12 +151,12 @@ import { ArtStoreService } from '../services/art-store.service';
             <!-- Related Artworks -->
             @if (relatedArtworks().length > 0) {
               <div class="mb-4">
-                <h4 class="text-xs font-bold text-indigo-400 uppercase tracking-wider mb-2">You might also like</h4>
+                <h4 class="text-xs font-bold text-orange-400 uppercase tracking-wider mb-2">You might also like</h4>
                 <div class="grid grid-cols-2 gap-2">
                    @for (related of relatedArtworks(); track related.id) {
                      <div 
                         (click)="scrollToArt(related.id)"
-                        class="group/related relative aspect-video bg-slate-900 rounded-lg overflow-hidden cursor-pointer border border-slate-700 hover:border-indigo-500 transition-colors"
+                        class="group/related relative aspect-video bg-slate-900 rounded-lg overflow-hidden cursor-pointer border border-slate-700 hover:border-red-500 transition-colors"
                      >
                         @if (isBase64(related.imageUrl)) {
                            <img 
@@ -199,7 +199,7 @@ import { ArtStoreService } from '../services/art-store.service';
                   <!-- Text -->
                   <div class="flex-1">
                     <div class="flex justify-between items-baseline mb-1">
-                      <span class="font-bold text-indigo-300 text-xs">{{ comment.user }}</span>
+                      <span class="font-bold text-orange-300 text-xs">{{ comment.user }}</span>
                       <span class="text-[10px] text-slate-500">{{ comment.timestamp | date:'shortTime' }}</span>
                     </div>
                     <p class="text-slate-300 text-xs">{{ comment.text }}</p>
@@ -216,12 +216,12 @@ import { ArtStoreService } from '../services/art-store.service';
                 [(ngModel)]="newCommentText"
                 (keydown.enter)="postComment()"
                 placeholder="Add a comment..."
-                class="flex-1 bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-indigo-500 placeholder-slate-600"
+                class="flex-1 bg-slate-900 border border-slate-700 rounded px-3 py-1.5 text-xs text-white focus:outline-none focus:border-red-500 placeholder-slate-600"
               >
               <button 
                 (click)="postComment()"
                 [disabled]="!newCommentText()"
-                class="bg-indigo-600 hover:bg-indigo-500 text-white rounded px-3 py-1.5 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                class="bg-red-600 hover:bg-red-500 text-white rounded px-3 py-1.5 text-xs font-medium disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
               >
                 Post
               </button>

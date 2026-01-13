@@ -17,7 +17,7 @@ import { ArtStoreService } from '../services/art-store.service';
           <div class="space-y-2">
             <label class="block text-sm font-medium text-slate-300">Artwork Image</label>
             <div 
-              class="relative border-2 border-dashed border-slate-600 rounded-xl p-8 text-center hover:border-indigo-500 transition-colors cursor-pointer bg-slate-900/50"
+              class="relative border-2 border-dashed border-slate-600 rounded-xl p-8 text-center hover:border-red-500 transition-colors cursor-pointer bg-slate-900/50"
               (dragover)="onDragOver($event)"
               (drop)="onDrop($event)"
               (click)="fileInput.click()"
@@ -58,7 +58,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <input 
               type="text" 
               formControlName="title"
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all"
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all"
               placeholder="e.g., Midnight Reverie"
             >
             @if (uploadForm.get('title')?.touched && uploadForm.get('title')?.invalid) {
@@ -72,7 +72,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <input 
               type="text" 
               formControlName="artist"
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all"
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all"
               placeholder="Your name or alias"
             >
             @if (uploadForm.get('artist')?.touched && uploadForm.get('artist')?.invalid) {
@@ -86,7 +86,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <input 
               type="text" 
               formControlName="tags"
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all"
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all"
               placeholder="e.g., oil painting, abstract, blue"
             >
           </div>
@@ -97,7 +97,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <textarea 
               formControlName="description"
               rows="4"
-              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-500 transition-all resize-none"
+              class="w-full bg-slate-900 border border-slate-700 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent placeholder-slate-500 transition-all resize-none"
               placeholder="Tell us about the inspiration..."
             ></textarea>
             @if (uploadForm.get('description')?.touched && uploadForm.get('description')?.invalid) {
@@ -117,7 +117,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <button 
               type="submit" 
               [disabled]="uploadForm.invalid || !previewUrl"
-              class="flex-1 px-6 py-3 rounded-lg bg-indigo-600 text-white font-bold hover:bg-indigo-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-indigo-900/20"
+              class="flex-1 px-6 py-3 rounded-lg bg-red-600 text-white font-bold hover:bg-red-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all shadow-lg shadow-red-900/20"
             >
               Publish Artwork
             </button>

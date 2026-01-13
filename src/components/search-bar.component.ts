@@ -9,7 +9,7 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
   imports: [CommonModule, ReactiveFormsModule],
   template: `
     <div class="relative max-w-md w-full group">
-       <div class="flex rounded-lg shadow-sm border border-slate-700 bg-slate-800 overflow-visible focus-within:ring-1 focus-within:ring-indigo-500 focus-within:border-indigo-500 transition-all relative">
+       <div class="flex rounded-lg shadow-sm border border-slate-700 bg-slate-800 overflow-visible focus-within:ring-1 focus-within:ring-red-500 focus-within:border-red-500 transition-all relative">
           
           <!-- Filter Dropdown Trigger -->
           <div class="relative border-r border-slate-700">
@@ -26,19 +26,19 @@ import { debounceTime, distinctUntilChanged } from 'rxjs/operators';
              @if (showFilterMenu()) {
                 <div class="fixed inset-0 z-40 bg-transparent" (click)="toggleFilter()"></div>
                 <div class="absolute top-full left-0 mt-2 w-36 bg-slate-800 border border-slate-700 rounded-lg shadow-xl z-50 py-1 overflow-hidden animate-in fade-in slide-in-from-top-1 duration-200">
-                   <button (click)="selectFilter('all')" [class.bg-indigo-500]="store.searchFilter() === 'all'" [class.text-white]="store.searchFilter() === 'all'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
+                   <button (click)="selectFilter('all')" [class.bg-red-500]="store.searchFilter() === 'all'" [class.text-white]="store.searchFilter() === 'all'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
                       All
                       @if (store.searchFilter() === 'all') { <span>✓</span> }
                    </button>
-                   <button (click)="selectFilter('title')" [class.bg-indigo-500]="store.searchFilter() === 'title'" [class.text-white]="store.searchFilter() === 'title'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
+                   <button (click)="selectFilter('title')" [class.bg-red-500]="store.searchFilter() === 'title'" [class.text-white]="store.searchFilter() === 'title'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
                       Title
                       @if (store.searchFilter() === 'title') { <span>✓</span> }
                    </button>
-                   <button (click)="selectFilter('artist')" [class.bg-indigo-500]="store.searchFilter() === 'artist'" [class.text-white]="store.searchFilter() === 'artist'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
+                   <button (click)="selectFilter('artist')" [class.bg-red-500]="store.searchFilter() === 'artist'" [class.text-white]="store.searchFilter() === 'artist'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
                       Artist
                       @if (store.searchFilter() === 'artist') { <span>✓</span> }
                    </button>
-                   <button (click)="selectFilter('tags')" [class.bg-indigo-500]="store.searchFilter() === 'tags'" [class.text-white]="store.searchFilter() === 'tags'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
+                   <button (click)="selectFilter('tags')" [class.bg-red-500]="store.searchFilter() === 'tags'" [class.text-white]="store.searchFilter() === 'tags'" class="w-full text-left px-4 py-2.5 text-sm text-slate-300 hover:bg-slate-700 hover:text-white transition-colors flex justify-between items-center">
                       Tags
                       @if (store.searchFilter() === 'tags') { <span>✓</span> }
                    </button>

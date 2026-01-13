@@ -15,7 +15,7 @@
       position: relative;
     }
     
-    /* Background Gradient */
+    /* Background Gradient - Red & Orange Theme */
     .bg-gradient-mesh {
       position: fixed;
       top: 0;
@@ -24,9 +24,9 @@
       height: 100vh;
       z-index: -2;
       background: 
-        radial-gradient(at 0% 0%, hsla(253,16%,7%,1) 0, transparent 50%), 
-        radial-gradient(at 50% 0%, hsla(225,39%,30%,1) 0, transparent 50%), 
-        radial-gradient(at 100% 0%, hsla(339,49%,30%,1) 0, transparent 50%);
+        radial-gradient(at 0% 0%, hsla(0, 70%, 20%, 1) 0, transparent 50%), 
+        radial-gradient(at 50% 0%, hsla(25, 80%, 25%, 1) 0, transparent 50%), 
+        radial-gradient(at 100% 0%, hsla(45, 90%, 20%, 1) 0, transparent 50%);
       background-size: 100% 100%;
     }
 
@@ -51,11 +51,11 @@
       background: #0f172a; 
     }
     ::-webkit-scrollbar-thumb {
-      background: #334155; 
+      background: #7f1d1d; /* Red-900 */
       border-radius: 4px;
     }
     ::-webkit-scrollbar-thumb:hover {
-      background: #475569; 
+      background: #b91c1c; /* Red-700 */
     }
   </style>
 <script type="importmap">
@@ -77,7 +77,7 @@
 }
 </script>
 </head>
-<body class="antialiased selection:bg-indigo-500 selection:text-white">
+<body class="antialiased selection:bg-red-500 selection:text-white">
   <div class="bg-gradient-mesh"></div>
   <div class="texture-overlay"></div>
   <app-root></app-root>

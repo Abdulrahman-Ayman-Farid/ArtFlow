@@ -30,7 +30,7 @@ import { ArtStoreService } from '../services/art-store.service';
               <input 
                 type="text" 
                 formControlName="name"
-                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 placeholder="Jane Doe"
               >
             </div>
@@ -40,7 +40,7 @@ import { ArtStoreService } from '../services/art-store.service';
               <input 
                 type="email" 
                 formControlName="email"
-                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 placeholder="you@example.com"
               >
             </div>
@@ -50,7 +50,7 @@ import { ArtStoreService } from '../services/art-store.service';
               <input 
                 type="password" 
                 formControlName="password"
-                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all"
+                class="block w-full bg-slate-900/50 border border-slate-600 rounded-lg px-4 py-2.5 text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                 placeholder="Create a strong password"
               >
             </div>
@@ -58,7 +58,7 @@ import { ArtStoreService } from '../services/art-store.service';
             <button 
               type="submit" 
               [disabled]="signupForm.invalid"
-              class="w-full bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-3 rounded-lg shadow-lg shadow-indigo-900/20 transition-all transform active:scale-[0.98] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="w-full bg-red-600 hover:bg-red-500 text-white font-semibold py-3 rounded-lg shadow-lg shadow-red-900/20 transition-all transform active:scale-[0.98] mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
             >
               Create Account
             </button>
@@ -67,7 +67,7 @@ import { ArtStoreService } from '../services/art-store.service';
           <div class="mt-6 text-center">
             <p class="text-slate-400 text-sm">
               Already have an account? 
-              <button (click)="onGoToLogin.emit()" class="text-indigo-400 hover:text-indigo-300 font-medium hover:underline">
+              <button (click)="onGoToLogin.emit()" class="text-orange-400 hover:text-orange-300 font-medium hover:underline">
                 Sign In
               </button>
             </p>
