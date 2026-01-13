@@ -20,10 +20,13 @@ export class GeminiService {
         contents: prompt,
       });
 
-      return response.text || "The artwork speaks for itself, defying mere words.";
+      if (response.text) {
+        return response.text;
+      }
+      throw new Error("No response text generated");
     } catch (error) {
       console.error('Gemini API Error:', error);
-      return "The critique is currently lost in the ether. Try again later.";
+      throw error;
     }
   }
 }

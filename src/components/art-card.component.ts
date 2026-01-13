@@ -111,7 +111,7 @@ import { ArtStoreService } from '../services/art-store.service';
 
         <!-- AI Critique Section -->
         @if (art().critique) {
-          <div class="mb-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg">
+          <div class="mb-4 p-3 bg-red-900/20 border border-red-500/30 rounded-lg animate-in fade-in slide-in-from-top-2">
             <div class="flex items-center gap-2 mb-1 text-xs font-semibold text-red-300 uppercase tracking-wide">
               <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a10 10 0 1 0 10 10H12V2z"></path><path d="M12 2a10 10 0 0 1 10 10h-10V2z"></path><path d="M12 12 2 12a10 10 0 0 1 10-10v10z"></path></svg>
               AI Critic
@@ -149,17 +149,33 @@ import { ArtStoreService } from '../services/art-store.service';
               <span class="text-sm">{{ art().comments.length }}</span>
             </button>
 
-            @if (!art().critique && !art().isLoadingCritique) {
-              <button 
-                (click)="askCritic()"
-                class="text-xs font-medium text-slate-400 hover:text-white hover:underline decoration-red-500 underline-offset-4 transition-colors"
-              >
-                Ask AI Critic
-              </button>
-            }
-
-            @if (art().isLoadingCritique) {
-               <span class="text-xs text-orange-400 animate-pulse">Analyzing...</span>
+            @if (!art().critique) {
+               @if (art().isLoadingCritique) {
+                   <span class="text-xs text-orange-400 animate-pulse flex items-center gap-1">
+                      <svg class="animate-spin h-3 w-3" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Analyzing...
+                   </span>
+               } @else if (critiqueError()) {
+                   <div class="flex items-center gap-2">
+                       <span class="text-[10px] text-red-400 font-medium">Request failed</span>
+                       <button 
+                         (click)="askCritic()"
+                         class="text-xs font-bold text-slate-300 hover:text-white hover:underline decoration-red-500 underline-offset-4 transition-colors"
+                       >
+                         Retry
+                       </button>
+                   </div>
+               } @else {
+                  <button 
+                    (click)="askCritic()"
+                    class="text-xs font-medium text-slate-400 hover:text-white hover:underline decoration-red-500 underline-offset-4 transition-colors"
+                  >
+                    Ask AI Critic
+                  </button>
+               }
             }
           </div>
         </div>
@@ -300,6 +316,7 @@ export class ArtCardComponent {
   showComments = signal(false);
   newCommentText = signal('');
   isZoomed = signal(false);
+  critiqueError = signal<string | null>(null);
 
   // Computed signal to find related artworks based on tags
   relatedArtworks = computed(() => {
@@ -328,15 +345,22 @@ export class ArtCardComponent {
 
   async askCritic() {
     const artData = this.art();
-    this.store.setLoadingCritique(artData.id, true);
-    
-    const critique = await this.geminiService.getArtCritique(
-      artData.title,
-      artData.artist,
-      artData.description
-    );
+    if (artData.isLoadingCritique) return;
 
-    this.store.updateCritique(artData.id, critique);
+    this.store.setLoadingCritique(artData.id, true);
+    this.critiqueError.set(null);
+    
+    try {
+      const critique = await this.geminiService.getArtCritique(
+        artData.title,
+        artData.artist,
+        artData.description
+      );
+      this.store.updateCritique(artData.id, critique);
+    } catch (err) {
+      this.store.setLoadingCritique(artData.id, false);
+      this.critiqueError.set('Critique failed');
+    }
   }
 
   toggleComments() {
